@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/database/shared_prefrence.dart';
-import 'package:todolist/models/task_model.dart';
-import 'package:todolist/views/tasks/add_task_view.dart';
 import 'package:todolist/views/tasks/edit_task_view.dart';
 
+
 class HomeView extends StatefulWidget {
+  const HomeView({super.key});
+
   @override
-  _HomeViewState createState() => _HomeViewState();
+  State<HomeView> createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> {
-  List<Task> _tasks = [];
+  List<Map<String, dynamic>> _tasks = [];
+  final SharedPreferenceService _preferenceService = SharedPreferenceService();
 
   @override
   void initState() {
@@ -18,35 +20,60 @@ class _HomeViewState extends State<HomeView> {
     _loadTasks();
   }
 
+  // Load tasks from shared preferences
   Future<void> _loadTasks() async {
-    List<Task> tasks = await TaskPreferences.loadTasks();
+    List<Map<String, dynamic>> loadedTasks = await _preferenceService.loadTasks();
     setState(() {
-      _tasks = tasks;
+      _tasks = loadedTasks;
     });
   }
 
+  // Save tasks to shared preferences
   Future<void> _saveTasks() async {
-    await TaskPreferences.saveTasks(_tasks);
+    await _preferenceService.saveTasks(_tasks);
   }
 
+  // Add a new task
   void _addTask() {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> AddTaskView()),);
+    Navigator.pushNamed(context, '/add').then((value) {
+      if (value != null && value is Map<String, dynamic>) {
+        setState(() {
+          _tasks.add(value);
+        });
+        _saveTasks();
+      }
+    });
   }
 
+  // Edit an existing task
   void _editTask(int index) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> EditTaskView()),);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditTaskScreen(task: _tasks[index], index: index),
+      ),
+    ).then((value) {
+      if (value != null && value is Map<String, dynamic>) {
+        setState(() {
+          _tasks[index] = value;
+        });
+        _saveTasks();
+      }
+    });
   }
 
-  void _deleteTask(int index) {
+  // Toggle task completion
+  void _toggleTaskCompletion(int index) {
     setState(() {
-      _tasks.removeAt(index);
+      _tasks[index]['completed'] = !_tasks[index]['completed'];
     });
     _saveTasks();
   }
 
-  void _toggleTaskCompletion(int index) {
+  // Delete a task
+  void _deleteTask(int index) {
     setState(() {
-      _tasks[index].isCompleted = !_tasks[index].isCompleted;
+      _tasks.removeAt(index);
     });
     _saveTasks();
   }
@@ -55,51 +82,49 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('To-Do List'),
+        backgroundColor: Colors.blueGrey,
+        title: const Text('To-Do List App',style: TextStyle(color: Colors.white),),
       ),
       body: ListView.builder(
         itemCount: _tasks.length,
         itemBuilder: (context, index) {
-          return Dismissible(
-            key: Key(_tasks[index].name), // Unique key for each task
-            direction: DismissDirection.endToStart, // Swipe from right to left
-            onDismissed: (direction) {
-              _deleteTask(index);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Task deleted")),
-              );
-            },
-            background: Container(
-              alignment: Alignment.centerRight,
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
-              color: Colors.red,
-              child: Icon(
-                Icons.delete,
-                color: Colors.white,
+          final task = _tasks[index];
+          return ListTile(
+            title: Text(
+              task['title'],
+              style: TextStyle(
+                decoration: task['completed'] ? TextDecoration.lineThrough : TextDecoration.none,
               ),
             ),
-            child: ListTile(
-              title: Text(
-                _tasks[index].name,
-                style: TextStyle(
-                  decoration: _tasks[index].isCompleted
-                      ? TextDecoration.lineThrough
-                      : TextDecoration.none,
+            subtitle: Text(task['description'],style: TextStyle(
+              decoration: task['completed'] ? TextDecoration.lineThrough : TextDecoration.none,
+            ),),
+            leading: Checkbox(
+              value: task['completed'],
+              onChanged: (bool? value) {
+                _toggleTaskCompletion(index);
+              },
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () => _editTask(index),
                 ),
-              ),
-              subtitle: Text(_tasks[index].description),
-              trailing: Checkbox(
-                value: _tasks[index].isCompleted,
-                onChanged: (value) => _toggleTaskCompletion(index),
-              ),
-              onTap: () => _editTask(index),
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () => _deleteTask(index),
+                ),
+              ],
             ),
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        backgroundColor: Colors.blueGrey,
         onPressed: _addTask,
+        child: const Icon(Icons.add,color: Colors.white,),
       ),
     );
   }
