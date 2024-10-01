@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-class EditTaskScreen extends StatefulWidget {
+class EditTaskView extends StatefulWidget {
   final Map<String, dynamic> task;
   final int index;
 
-  const EditTaskScreen({super.key, required this.task, required this.index});
+  const EditTaskView({super.key, required this.task, required this.index});
 
   @override
-  State<EditTaskScreen> createState() => _EditTaskScreenState();
+  State<EditTaskView> createState() => _EditTaskViewState();
 }
 
-class _EditTaskScreenState extends State<EditTaskScreen> {
+class _EditTaskViewState extends State<EditTaskView> {
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
 

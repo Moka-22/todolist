@@ -50,7 +50,7 @@ class _HomeViewState extends State<HomeView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => EditTaskScreen(task: _tasks[index], index: index),
+        builder: (context) => EditTaskView(task: _tasks[index], index: index),
       ),
     ).then((value) {
       if (value != null && value is Map<String, dynamic>) {

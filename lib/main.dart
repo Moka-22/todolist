@@ -16,8 +16,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: const HomeView(),
       routes: {
-        '/add': (context) => const AddTaskScreen(),
-        '/edit': (context) => EditTaskScreen(task: {}, index: -1), // Dummy task and index
+        '/add': (context) => const AddTaskView(),
+        '/edit': (context) => EditTaskView(task: {}, index: -1), // Dummy task and index
       },
     );
   }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class AddTaskScreen extends StatefulWidget {
-  const AddTaskScreen({super.key});
+class AddTaskView extends StatefulWidget {
+  const AddTaskView({super.key});
 
   @override
-  State<AddTaskScreen> createState() => _AddTaskScreenState();
+  State<AddTaskView> createState() => _AddTaskViewState();
 }
 
-class _AddTaskScreenState extends State<AddTaskScreen> {
+class _AddTaskViewState extends State<AddTaskView> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
