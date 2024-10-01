@@ -15,7 +15,9 @@ class SharedPreferenceService {
     String? tasksString = prefs.getString(tasksKey);
     if (tasksString != null) {
       List<dynamic> decodedTasks = jsonDecode(tasksString);
-      return decodedTasks.map((task) => Map<String, dynamic>.from(task)).toList();
+      return decodedTasks
+          .map((task) => Map<String, dynamic>.from(task))
+          .toList();
     }
     return [];
   }

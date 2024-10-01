@@ -18,12 +18,13 @@ class _EditTaskViewState extends State<EditTaskView> {
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.task['title']);
-    _descriptionController = TextEditingController(text: widget.task['description']);
+    _descriptionController =
+        TextEditingController(text: widget.task['description']);
   }
 
-
   void _saveTask() {
-    if (_titleController.text.isNotEmpty && _descriptionController.text.isNotEmpty) {
+    if (_titleController.text.isNotEmpty &&
+        _descriptionController.text.isNotEmpty) {
       Navigator.pop(context, {
         'title': _titleController.text,
         'description': _descriptionController.text,
@@ -37,7 +38,10 @@ class _EditTaskViewState extends State<EditTaskView> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueGrey,
-        title: const Text('Edit Task',style: TextStyle(color: Colors.white),),
+        title: const Text(
+          'Edit Task',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -45,14 +49,19 @@ class _EditTaskViewState extends State<EditTaskView> {
           children: [
             TextField(
               controller: _titleController,
-              decoration: const InputDecoration(labelText: 'Task Title',border: OutlineInputBorder(),),
+              decoration: const InputDecoration(
+                labelText: 'Task Title',
+                border: OutlineInputBorder(),
+              ),
             ),
-            const SizedBox(height: 15,),
+            const SizedBox(
+              height: 15,
+            ),
             TextField(
               controller: _descriptionController,
               decoration: const InputDecoration(
                 labelText: 'Task Description',
-              border: OutlineInputBorder(),
+                border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
